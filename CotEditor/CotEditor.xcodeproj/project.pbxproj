@@ -705,6 +705,24 @@
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
+		<key>2A0CAD9319DEEA6100852997</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>folder</string>
+			<key>path</key>
+			<string>Syntaxes</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>2A0CAD9419DEEA6100852997</key>
+		<dict>
+			<key>fileRef</key>
+			<string>2A0CAD9319DEEA6100852997</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
 		<key>2A0E160B18E7240C00AAD872</key>
 		<dict>
 			<key>children</key>
@@ -2210,7 +2228,7 @@
 				<string>8C2790FB07D18A6700103A53</string>
 				<string>2A6E3F3C19B5218300A63E97</string>
 				<string>2A9871A819AEABDB0081BADB</string>
-				<string>2A3FB2A318EC473A00D9CB2C</string>
+				<string>2A0CAD9319DEEA6100852997</string>
 				<string>2A7846DA18FE035E006BDF00</string>
 				<string>6CA3B36012E3B59B0019AB2E</string>
 				<string>259B181207E530DA00C5FD26</string>
@@ -2234,24 +2252,6 @@
 			<string>Frameworks</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
-		</dict>
-		<key>2A3FB2A318EC473A00D9CB2C</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>folder</string>
-			<key>path</key>
-			<string>SyntaxColorings</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>2A3FB2A418EC473A00D9CB2C</key>
-		<dict>
-			<key>fileRef</key>
-			<string>2A3FB2A318EC473A00D9CB2C</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
 		</dict>
 		<key>2A3FB2AB18ECEFF200D9CB2C</key>
 		<dict>
@@ -5779,7 +5779,6 @@ fi
 			<key>files</key>
 			<array>
 				<string>2A1EB5C419AD469500C1E37E</string>
-				<string>2A3FB2A418EC473A00D9CB2C</string>
 				<string>2ABC76241909BF5200D2B592</string>
 				<string>6CA3B3E312E3B59B0019AB2E</string>
 				<string>2A9871A919AEABDB0081BADB</string>
@@ -5797,6 +5796,7 @@ fi
 				<string>2588E9CE07C4851C0060021D</string>
 				<string>8C28CD2E081101A300733DA7</string>
 				<string>8C7400A408C6D93900683672</string>
+				<string>2A0CAD9419DEEA6100852997</string>
 				<string>2A149DA619016ABB00A9D6EF</string>
 				<string>2A149DAC19016ABB00A9D6EF</string>
 				<string>2AFFB72818D8C7DE00118477</string>
