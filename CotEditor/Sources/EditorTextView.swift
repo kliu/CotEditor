@@ -482,7 +482,7 @@ final class EditorTextView: NSTextView, Themable, CurrentLineHighlighting, URLDe
         
         // trim trailing whitespace if needed
         if UserDefaults.standard[.autoTrimsTrailingWhitespace] {
-            self.trimTrailingWhitespaceTask.schedule(delay: .seconds(5))
+            self.trimTrailingWhitespaceTask.schedule(delay: .seconds(3))
         }
         
         // retry completion if needed
@@ -820,14 +820,6 @@ final class EditorTextView: NSTextView, Themable, CurrentLineHighlighting, URLDe
         // remove unwanted "Font" menu and its submenus
         if let fontMenuItem = menu.item(withTitle: "Font".localized(comment: "menu item title in the context menu")) {
             menu.removeItem(fontMenuItem)
-        }
-        
-        // add "Inspect Character" menu item if single character is selected
-        if (self.string as NSString).substring(with: self.selectedRange).compareCount(with: 1) == .equal {
-            menu.insertItem(withTitle: "Inspect Character".localized,
-                            action: #selector(showSelectionInfo),
-                            keyEquivalent: "",
-                            at: 1)
         }
         
         // add "Copy as Rich Text" menu item
@@ -1171,10 +1163,6 @@ final class EditorTextView: NSTextView, Themable, CurrentLineHighlighting, URLDe
                 //    disable it to make the state same as `replaceQuotesInSelection(_:)`.
                 return !self.selectedRange.isEmpty
             
-            case #selector(showSelectionInfo):
-                return !self.hasMultipleInsertions &&
-                    (self.string as NSString).substring(with: self.selectedRange).compareCount(with: 1) == .equal
-            
             case #selector(toggleComment):
                 if let menuItem = item as? NSMenuItem {
                     let canComment = self.canUncomment(partly: false)
@@ -1202,6 +1190,13 @@ final class EditorTextView: NSTextView, Themable, CurrentLineHighlighting, URLDe
     
     // MARK: Public Accessors
     
+    /// document object representing the text view contents
+    var document: Document?  {
+        
+        return self.window?.windowController?.document as? Document
+    }
+    
+    
     /// tab width in number of spaces
     @objc var tabWidth: Int {
         
@@ -1212,6 +1207,7 @@ final class EditorTextView: NSTextView, Themable, CurrentLineHighlighting, URLDe
             guard tabWidth != oldValue else { return }
             
             self.invalidateDefaultParagraphStyle()
+            self.invalidateRestorableState()
         }
     }
     
@@ -1347,38 +1343,8 @@ final class EditorTextView: NSTextView, Themable, CurrentLineHighlighting, URLDe
     }
     
     
-    /// display character information by popover
-    @IBAction func showSelectionInfo(_ sender: Any?) {
-        
-        var selectedString = (self.string as NSString).substring(with: self.selectedRange)
-        
-        // apply document's line ending
-        if let documentLineEnding = self.document?.lineEnding,
-            documentLineEnding != .lf, selectedString.detectedLineEnding == .lf
-        {
-            selectedString = selectedString.replacingLineEndings(with: documentLineEnding)
-        }
-        
-        guard let characterInfo = try? CharacterInfo(string: selectedString) else { return }
-        
-        let popoverController = CharacterPopoverController.instantiate(for: characterInfo)
-        let positioningRect = self.boundingRect(for: self.selectedRange)?.insetBy(dx: -4, dy: -4) ?? .zero
-        
-        self.scrollRangeToVisible(self.selectedRange)
-        self.showFindIndicator(for: self.selectedRange)
-        popoverController.showPopover(relativeTo: positioningRect, of: self)
-    }
-    
-    
     
     // MARK: Private Methods
-    
-    /// document object representing the text view contents
-    private var document: Document? {
-        
-        return self.window?.windowController?.document as? Document
-    }
-    
     
     /// update coloring settings
     private func applyTheme() {

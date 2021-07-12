@@ -9,7 +9,7 @@
 //  ---------------------------------------------------------------------------
 //
 //  © 2004-2007 nakamuxu
-//  © 2014-2020 1024jp
+//  © 2014-2021 1024jp
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ final class ScriptManager: NSObject, NSFilePresenter {
     
     // MARK: Private Properties
     
-    private let scriptsDirectoryURL: URL
+    private let scriptsDirectoryURL: URL?
     private var scriptHandlersTable: [ScriptingEventType: [EventScript]] = [:]
     
     private lazy var menuBuildingTask = Debouncer(delay: .milliseconds(200)) { [weak self] in self?.buildScriptMenu() }
@@ -52,20 +52,12 @@ final class ScriptManager: NSObject, NSFilePresenter {
     
     private override init() {
         
-        // find Application Scripts folder
         do {
             self.scriptsDirectoryURL = try FileManager.default.url(for: .applicationScriptsDirectory,
                                                                    in: .userDomainMask, appropriateFor: nil, create: true)
         } catch {
-            // fallback directory creation for in case the app is not Sandboxed
-            let bundleIdentifier = Bundle.main.bundleIdentifier!
-            let libraryURL = try! FileManager.default.url(for: .libraryDirectory,
-                                                          in: .userDomainMask, appropriateFor: nil, create: false)
-            self.scriptsDirectoryURL = libraryURL.appendingPathComponent("Application Scripts").appendingPathComponent(bundleIdentifier, isDirectory: true)
-            
-            if !self.scriptsDirectoryURL.isReachable {
-                try! FileManager.default.createDirectory(at: self.scriptsDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-            }
+            self.scriptsDirectoryURL = nil
+            print("cannot create the scripts folder: \(error)")
         }
         
         self.presentedItemURL = self.scriptsDirectoryURL
@@ -129,11 +121,13 @@ final class ScriptManager: NSObject, NSFilePresenter {
         self.menuBuildingTask.cancel()
         self.scriptHandlersTable.removeAll()
         
+        guard let directoryURL = self.scriptsDirectoryURL else { return }
+        
         let menu = MainMenu.script.menu!
         
         menu.removeAllItems()
         
-        self.addChildFileItem(in: self.scriptsDirectoryURL, to: menu)
+        self.addChildFileItem(in: directoryURL, to: menu)
         
         if !menu.items.isEmpty {
             menu.addItem(.separator())
@@ -219,7 +213,9 @@ final class ScriptManager: NSObject, NSFilePresenter {
     /// open Script menu folder in Finder
     @IBAction func openScriptFolder(_ sender: Any?) {
         
-        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: self.scriptsDirectoryURL.path)
+        guard let dicrectoryURL = self.scriptsDirectoryURL else { return }
+        
+        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: dicrectoryURL.path)
     }
     
     
@@ -302,16 +298,8 @@ final class ScriptManager: NSObject, NSFilePresenter {
             if name == .separator {  // separator
                 menu.addItem(.separator())
                 
-            } else if (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {  // folder
-                let submenu = NSMenu(title: name)
-                self.addChildFileItem(in: url, to: submenu)
-                
-                let item = NSMenuItem(title: name, action: nil, keyEquivalent: "")
-                item.tag = MainMenu.MenuItemTag.scriptDirectory.rawValue
-                item.submenu = submenu
-                menu.addItem(item)
-                
             } else if let descriptor = ScriptDescriptor(at: url, name: name), let script = try? descriptor.makeScript() {  // scripts
+                // -> Test script possibility before folder because a script can be a directory, e.g. .scptd.
                 for eventType in descriptor.eventTypes {
                     guard let script = script as? EventScript else { continue }
                     self.scriptHandlersTable[eventType, default: []].append(script)
@@ -323,6 +311,15 @@ final class ScriptManager: NSObject, NSFilePresenter {
                 item.representedObject = script
                 item.target = self
                 item.toolTip = "“Option + click” to open script in editor.".localized
+                menu.addItem(item)
+                
+            } else if (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {  // folder
+                let submenu = NSMenu(title: name)
+                self.addChildFileItem(in: url, to: submenu)
+                
+                let item = NSMenuItem(title: name, action: nil, keyEquivalent: "")
+                item.tag = MainMenu.MenuItemTag.scriptDirectory.rawValue
+                item.submenu = submenu
                 menu.addItem(item)
             }
         }

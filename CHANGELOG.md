@@ -2,15 +2,84 @@
 Change Log
 ==========================
 
-4.0.3 (unreleased)
+4.0.6 (unreleased)
 --------------------------
 
 ### Improvements
 
+- Add “Share” command to the menus for setting files, such as theme, syntax style, or  multi replacement definition.
+- Resume “Select word” on top of the document if the search reached the end.
+- Update the visual style of the multiple replacement window on macOS 11.
+- Minimize scrolling when focusing on a text such as text search and outline selection.
+- Improve the syntax highlighting algorithm around comments and quoted text.
+- Revert JavaScript syntax style update in CotEditor 4.0.5 that modifies regular expression highlight.
+- Update the bundled cot command to enable reading large piped text entirely.
+- Update help contents.
+- [trivial] Sort themes alphabetically regardless whether they are bundled or not.
+- [trivial] Make the timing to trim trailing spaces shorter.
+- [trivial] Tweak Japanese localization in Preferences.
+
+
+### Fixes
+
+- Fix an issue that the document theme did occasionally not change when switching the default theme to “Anura” in Dark Mode.
+- Fix an issue that disabling the “Reopen windows from last session” option did not work if the Auto Save is disabled.
+- Fix an issue on the latest systems that the open dialog could not see inside .app packages although when selecting the “Show hidden files” checkbox.
+-  Fix an issue that the visual window state occasionally did not restore from the last session correctly.
+- Fix an issue in the inspector that the content occasionally overlapped with the pane controller above if it is shown when the window opens.
+- Fix an issue that the navigation bar tinted wrongly when the document window is in fullscreen and the editor is non-opaque.
+
+
+
+4.0.5 (463)
+--------------------------
+
+### Improvements
+
+- Update JavaScript syntax style to improve regular expression highlight.
+
+
+### Fixes
+
+- Fix an issue that the application did not terminate when all windows are closed.
+- Fix an issue that annoying dialog that alerts saving was failed could be shown while typing when autosaving is disabled.
+- Address an issue that typing in a large document could be slow when the Autosave feature is disabled.
+
+
+
+4.0.4 (461)
+--------------------------
+
+### Improvements
+
+- Update Lua syntax style.
+- Update Swift syntax style for more accurate outline extraction and literal number highlight.
+- Update JavaScript, PHP, and CoffeeScript syntax styles for more accurate literal number highlight.
+- Avoid escaping non-ASCII characters to Unicode code points when exporting syntax styles to YAML files.
+
+
+### Fixes
+
+- Fix an issue that the application did not terminate when all windows are closed.
+- Fix an issue in the script menu that a script bundle (.scptd) was handled not as a script but as a folder.
+- Fix an issue in the snippet key bindings that shortcuts with only Shift key for modifier keys were accepted though does not work correctly.
+- Fix an issue that the application rarely showed the open dialog on launch even when the user setting for the startup behavior is not “show open dialog.”
+- Fix literal number highlight with Ruby syntax style.
+- Address an issue that annoying dialog that alerts saving was failed could be shown while typing when autosaving is disabled.
+
+
+
+4.0.3 (459)
+--------------------------
+
+### Improvements
+
+- Keep detached character inspectors even after the parent document is closed.
 - Detect syntax style from the file extension also case-insensitively.
 - Update R syntax style.
 - [non-AppStore ver.] Reduce the application size.
 - [dev] Update Yams from 4.0.4 to 4.0.6.
+- [dev] Update the build environment to Xcode 12.5.
 
 
 
